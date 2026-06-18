@@ -176,7 +176,7 @@ select.input { cursor: pointer; min-width: 200px; }
 .best-btn.active { background: rgba(251, 191, 36, 0.16); color: var(--gold); border-color: var(--gold); }
 
 .img-wrap { position: relative; border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-2); border: 1px solid var(--border); }
-.out-img { width: 100%; display: block; aspect-ratio: 1 / 1; object-fit: cover; cursor: zoom-in; transition: transform 0.25s; }
+.out-img { width: 100%; height: auto; display: block; cursor: zoom-in; transition: transform 0.25s; }
 .out-img:hover { transform: scale(1.02); }
 .out-err { padding: 28px 12px; text-align: center; color: var(--bad); font-size: 13px; }
 
