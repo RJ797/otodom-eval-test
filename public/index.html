@@ -4,53 +4,85 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Image Eval — Scoring</title>
-  <link rel="stylesheet" href="/scoring.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="/scoring.css?v=2" />
 </head>
 <body>
   <header class="topbar">
-    <div class="brand"><span class="logo">◆</span><h1>Image Eval — Scoring</h1></div>
+    <div class="brand">
+      <span class="logo">◆</span>
+      <div>
+        <h1>Image Eval</h1>
+        <p class="sub">blind human scoring</p>
+      </div>
+    </div>
+
     <div class="controls">
-      <input id="scorer" class="scorer" type="text" placeholder="your name (scorer)" />
-      <select id="runSelect"></select>
-      <label class="toggle">
+      <div class="field">
+        <input id="scorer" class="input" type="text" placeholder="Your name" autocomplete="off" />
+      </div>
+      <div class="field">
+        <select id="runSelect" class="input"></select>
+      </div>
+      <label class="switch" title="Show which model produced each image">
         <input id="revealLabels" type="checkbox" />
-        <span>Reveal model labels</span>
+        <span class="track"><span class="thumb"></span></span>
+        <span class="switch-label">Reveal models</span>
       </label>
-      <button id="summaryBtn" class="ghost">Summary</button>
+      <button id="summaryBtn" class="btn ghost">Summary</button>
     </div>
   </header>
 
-  <div id="progress" class="progress"></div>
+  <div class="progress-wrap">
+    <div id="progressBar" class="progress"><div class="bar"></div></div>
+    <span id="progressText" class="progress-text"></span>
+  </div>
 
   <main id="main" class="main">
-    <div id="empty" class="empty">Enter your name and pick a run to start scoring.</div>
+    <div id="empty" class="empty">
+      <div class="empty-icon">✦</div>
+      <h2>Ready to score</h2>
+      <p>Enter your name and pick a run to begin.</p>
+    </div>
 
     <section id="card" class="card hidden">
-      <div class="reference">
-        <h3>Reference input</h3>
-        <img id="inputImg" class="ref-img" alt="input" />
-        <div class="prompt-box">
-          <h4>Prompt</h4>
-          <p id="promptText" class="prompt"></p>
+      <aside class="reference">
+        <div class="ref-sticky">
+          <div class="panel-label">Reference input</div>
+          <button class="img-btn" data-zoom>
+            <img id="inputImg" class="ref-img" alt="reference input" />
+          </button>
+          <div class="prompt-box">
+            <div class="panel-label">Prompt</div>
+            <p id="promptText" class="prompt"></p>
+          </div>
         </div>
-      </div>
+      </aside>
 
       <div class="outputs" id="outputs"></div>
     </section>
-
-    <div id="navbar" class="navbar hidden">
-      <button id="prevBtn" class="ghost">‹ Prev</button>
-      <span id="navInfo" class="nav-info"></span>
-      <button id="saveNextBtn" class="primary">Save &amp; next ›</button>
-    </div>
   </main>
+
+  <div id="actionbar" class="actionbar hidden">
+    <button id="prevBtn" class="btn ghost">‹ Prev</button>
+    <div class="action-center">
+      <span id="navInfo" class="nav-info"></span>
+      <span class="hint">↵ save · ← → navigate</span>
+    </div>
+    <button id="saveNextBtn" class="btn primary">Save &amp; next ›</button>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox hidden">
+    <img id="lightboxImg" alt="zoomed" />
+  </div>
 
   <!-- Summary modal -->
   <div id="summaryModal" class="modal hidden">
     <div class="modal-body">
       <div class="modal-head">
         <h2>Run summary</h2>
-        <button id="closeSummary" class="ghost">Close</button>
+        <button id="closeSummary" class="btn ghost">Close</button>
       </div>
       <div id="summaryContent"></div>
     </div>
@@ -58,6 +90,6 @@
 
   <div id="toast" class="toast hidden"></div>
 
-  <script src="/scoring.js"></script>
+  <script src="/scoring.js?v=2"></script>
 </body>
 </html>
