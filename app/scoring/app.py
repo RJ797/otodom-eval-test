@@ -9,11 +9,12 @@ dev we also mount it so `uvicorn app.scoring.app:app` serves the whole thing.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from pydantic import BaseModel
 
 from app import config
@@ -21,9 +22,10 @@ from app.scoring import store
 
 app = FastAPI(title="Image Eval — Scoring")
 
-# Static UI lives inside the package so it is bundled into the Vercel function
-# (the FastAPI preset's catch-all function serves all routes, including "/").
-STATIC_DIR = Path(__file__).resolve().parent / "static"
+# Static UI lives in top-level /public. On Vercel those files are served by the
+# CDN (do NOT app.mount them), so the function only redirects "/" to the static
+# index. Locally there is no CDN, so we mount /public for convenience.
+PUBLIC_DIR = Path(__file__).resolve().parent.parent.parent / "public"
 
 
 class ScoreItem(BaseModel):
@@ -84,8 +86,14 @@ def get_summary(run_id: str) -> dict:
     return store.run_summary(run_id)
 
 
-# Serve the static UI from the function (mounted last so /api/* routes win).
-if STATIC_DIR.is_dir():
+if os.getenv("VERCEL"):
+    # Production: /public is served by the CDN; just send "/" to the index file.
+    @app.get("/", include_in_schema=False)
+    def _root() -> RedirectResponse:
+        return RedirectResponse("/index.html")
+
+elif PUBLIC_DIR.is_dir():
+    # Local dev: serve /public directly (mounted last so /api/* routes win).
     from fastapi.staticfiles import StaticFiles
 
-    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
+    app.mount("/", StaticFiles(directory=PUBLIC_DIR, html=True), name="public")
