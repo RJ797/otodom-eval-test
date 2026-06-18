@@ -1,0 +1,7 @@
+# Vercel (scoring app) dependencies ONLY — keep this lean.
+# The scoring app imports only FastAPI + pymongo (+ dotenv for local dev).
+# For the local runner / ad-hoc playground use requirements-runner.txt instead.
+fastapi>=0.115.0
+pymongo[srv]>=4.8.0
+certifi>=2024.2.2
+python-dotenv>=1.0.1

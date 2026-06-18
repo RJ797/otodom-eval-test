@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Eval — Scoring</title>
+  <link rel="stylesheet" href="/scoring.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="logo">◆</span><h1>Image Eval — Scoring</h1></div>
+    <div class="controls">
+      <input id="scorer" class="scorer" type="text" placeholder="your name (scorer)" />
+      <select id="runSelect"></select>
+      <label class="toggle">
+        <input id="revealLabels" type="checkbox" />
+        <span>Reveal model labels</span>
+      </label>
+      <button id="summaryBtn" class="ghost">Summary</button>
+    </div>
+  </header>
+
+  <div id="progress" class="progress"></div>
+
+  <main id="main" class="main">
+    <div id="empty" class="empty">Enter your name and pick a run to start scoring.</div>
+
+    <section id="card" class="card hidden">
+      <div class="reference">
+        <h3>Reference input</h3>
+        <img id="inputImg" class="ref-img" alt="input" />
+        <div class="prompt-box">
+          <h4>Prompt</h4>
+          <p id="promptText" class="prompt"></p>
+        </div>
+      </div>
+
+      <div class="outputs" id="outputs"></div>
+    </section>
+
+    <div id="navbar" class="navbar hidden">
+      <button id="prevBtn" class="ghost">‹ Prev</button>
+      <span id="navInfo" class="nav-info"></span>
+      <button id="saveNextBtn" class="primary">Save &amp; next ›</button>
+    </div>
+  </main>
+
+  <!-- Summary modal -->
+  <div id="summaryModal" class="modal hidden">
+    <div class="modal-body">
+      <div class="modal-head">
+        <h2>Run summary</h2>
+        <button id="closeSummary" class="ghost">Close</button>
+      </div>
+      <div id="summaryContent"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="/scoring.js"></script>
+</body>
+</html>

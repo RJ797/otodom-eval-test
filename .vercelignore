@@ -1,0 +1,23 @@
+# Keep the Vercel (scoring app) bundle lean: exclude runner-only code, data,
+# the local playground, and dev artifacts. The scoring app only needs
+# app/config.py, app/db.py, app/scoring/*, and public/.
+.venv/
+venv/
+data/
+generated/
+loadtest/
+scripts/
+static/
+requirements-runner.txt
+PLAN.md
+README.md
+
+# runner-only modules (not imported by the scoring app)
+app/main.py
+app/gemini_client.py
+app/replicate_client.py
+app/models_registry.py
+app/pricing.py
+app/experiment.py
+app/dataset.py
+app/storage/
