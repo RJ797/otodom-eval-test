@@ -105,6 +105,12 @@ VARIANTS: dict[str, dict] = {
 }
 DEFAULT_VARIANTS = ["gemini_min", "gemini_high", "flux"]
 
+# --- Gemini image generation options ----------------------------------------
+GEMINI_IMAGE_SIZE = "1K"  # 1K / 2K
+# "auto" => omit aspect_ratio so Gemini keeps/decides the shape (matches input
+# on edits). Any other value (e.g. "1:1", "4:3") is sent through as-is.
+GEMINI_IMAGE_ASPECT_RATIO = "auto"
+
 # --- Pricing (USD) -----------------------------------------------------------
 # Gemini API returns only token counts, so cost is computed from tokens using
 # these per-1M-token rates (image output is billed as output/candidates tokens).
@@ -118,7 +124,7 @@ SCORE_MIN = 1
 SCORE_MAX = 10
 
 # --- Runner behavior ---------------------------------------------------------
-RUN_CONCURRENCY = int(os.getenv("RUN_CONCURRENCY", "4"))
+RUN_CONCURRENCY = int(os.getenv("RUN_CONCURRENCY", "12"))
 RUN_MAX_RETRIES = int(os.getenv("RUN_MAX_RETRIES", "2"))
 
 

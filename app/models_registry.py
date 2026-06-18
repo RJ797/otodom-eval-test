@@ -24,11 +24,14 @@ def _gemini(key: str, prompt: str, image_bytes: Optional[bytes], mime: str) -> d
         if image_bytes
         else None
     )
+    aspect = config.GEMINI_IMAGE_ASPECT_RATIO
     res = gemini_client.generate_image(
         prompt=prompt,
         model=meta["model"],
         images=images,
         thinking_level=meta["thinking_level"],
+        image_size=config.GEMINI_IMAGE_SIZE,
+        aspect_ratio=None if str(aspect).lower() == "auto" else aspect,
     )
     out: dict[str, Any] = {
         "model": meta["model"],
