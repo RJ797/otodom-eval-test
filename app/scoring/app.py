@@ -21,7 +21,9 @@ from app.scoring import store
 
 app = FastAPI(title="Image Eval — Scoring")
 
-PUBLIC_DIR = Path(__file__).resolve().parent.parent.parent / "public"
+# Static UI lives inside the package so it is bundled into the Vercel function
+# (the FastAPI preset's catch-all function serves all routes, including "/").
+STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 
 class ScoreItem(BaseModel):
@@ -82,8 +84,8 @@ def get_summary(run_id: str) -> dict:
     return store.run_summary(run_id)
 
 
-# --- Local-dev static serving (no-op on Vercel, which serves /public via CDN) -
-if PUBLIC_DIR.is_dir():
+# Serve the static UI from the function (mounted last so /api/* routes win).
+if STATIC_DIR.is_dir():
     from fastapi.staticfiles import StaticFiles
 
-    app.mount("/", StaticFiles(directory=PUBLIC_DIR, html=True), name="public")
+    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
