@@ -47,8 +47,8 @@ def _gemini(key: str, prompt: str, image_bytes: Optional[bytes], mime: str) -> d
     elif res.ok and not res.images:
         out["status"] = "error"
         out["error"] = "Model returned no image."
-    # Gemini reports the billed cost in its API response.
-    out["cost_usd"] = res.cost_usd if out["status"] == "ok" else 0.0
+    # Gemini API returns only token counts (no USD), so compute cost from tokens.
+    out["cost_usd"] = pricing.gemini_cost(out["token_usage"]) if out["status"] == "ok" else 0.0
     return out
 
 

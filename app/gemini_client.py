@@ -76,38 +76,28 @@ class GenResult:
 
 
 def _extract_usage(resp: Any) -> dict[str, Any]:
+    """Normalize Gemini usage_metadata into short, stable keys.
+
+    The Gemini API reports only token counts (no USD cost), so cost is computed
+    downstream from these counts. For image models, image output is billed as
+    `candidates` tokens.
+    """
     usage = getattr(resp, "usage_metadata", None)
     if not usage:
         return {}
+    mapping = {
+        "prompt": "prompt_token_count",
+        "candidates": "candidates_token_count",
+        "thoughts": "thoughts_token_count",
+        "cached": "cached_content_token_count",
+        "total": "total_token_count",
+    }
     out: dict[str, Any] = {}
-    for key in (
-        "prompt_token_count",
-        "candidates_token_count",
-        "thoughts_token_count",
-        "total_token_count",
-    ):
-        val = getattr(usage, key, None)
+    for short, attr in mapping.items():
+        val = getattr(usage, attr, None)
         if val is not None:
-            out[key] = val
+            out[short] = val
     return out
-
-
-def _extract_cost(resp: Any) -> Optional[float]:
-    """Best-effort read of the billed cost the Gemini API reports in the response.
-
-    Checks a few likely locations (top-level and usage_metadata) for a cost field.
-    Returns None if the response does not carry a cost.
-    """
-    candidates = [resp, getattr(resp, "usage_metadata", None), getattr(resp, "metadata", None)]
-    fields = ("cost", "cost_usd", "total_cost", "total_cost_usd", "billed_cost", "estimated_cost")
-    for obj in candidates:
-        if obj is None:
-            continue
-        for name in fields:
-            val = getattr(obj, name, None)
-            if isinstance(val, (int, float)):
-                return float(val)
-    return None
 
 
 def _build_contents(prompt: str, images: Optional[list[ImageInput]]) -> list[Any]:
@@ -193,7 +183,6 @@ def generate_text(
         text="".join(text_parts),
         thoughts="\n".join(thought_parts),
         usage=_extract_usage(resp),
-        cost_usd=_extract_cost(resp),
         latency_ms=int((time.perf_counter() - started) * 1000),
     )
 
@@ -275,6 +264,5 @@ def generate_image(
         text="".join(text_parts),
         images=out_images,
         usage=_extract_usage(resp),
-        cost_usd=_extract_cost(resp),
         latency_ms=int((time.perf_counter() - started) * 1000),
     )

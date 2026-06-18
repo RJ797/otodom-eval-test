@@ -60,8 +60,12 @@ REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN", "")
 REPLICATE_FLUX_MODEL = "black-forest-labs/flux-2-klein-9b"
 REPLICATE_FLUX_PROMPT_FIELD = "prompt"
 REPLICATE_FLUX_IMAGES_FIELD = "images"
-# Default output format requested from the model.
-REPLICATE_FLUX_OUTPUT_FORMAT = "png"
+# Generation params (match the input image's aspect ratio for fair comparison).
+REPLICATE_FLUX_ASPECT_RATIO = "match_input_image"
+REPLICATE_FLUX_OUTPUT_FORMAT = "jpg"
+REPLICATE_FLUX_OUTPUT_QUALITY = 100
+REPLICATE_FLUX_OUTPUT_MEGAPIXELS = "1"
+REPLICATE_FLUX_GO_FAST = False
 
 # --- AWS S3 + CDN ------------------------------------------------------------
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
@@ -102,8 +106,11 @@ VARIANTS: dict[str, dict] = {
 DEFAULT_VARIANTS = ["gemini_min", "gemini_high", "flux"]
 
 # --- Pricing (USD) -----------------------------------------------------------
-# Gemini cost is taken from the API response (no rate needed). Flux is a flat
-# per-image rate you set here / in .env.
+# Gemini API returns only token counts, so cost is computed from tokens using
+# these per-1M-token rates (image output is billed as output/candidates tokens).
+# Flux has no usage in its response, so it uses a flat per-image rate.
+GEMINI_PRICE_INPUT_PER_1M = float(os.getenv("GEMINI_PRICE_INPUT_PER_1M", "0"))
+GEMINI_PRICE_OUTPUT_PER_1M = float(os.getenv("GEMINI_PRICE_OUTPUT_PER_1M", "0"))
 FLUX_COST_PER_IMAGE = float(os.getenv("FLUX_COST_PER_IMAGE", "0"))
 
 # --- Scoring -----------------------------------------------------------------

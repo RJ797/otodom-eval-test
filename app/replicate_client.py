@@ -69,11 +69,16 @@ def generate(
     model_id = model or config.REPLICATE_FLUX_MODEL
     payload: dict[str, Any] = {
         config.REPLICATE_FLUX_PROMPT_FIELD: prompt,
+        "go_fast": config.REPLICATE_FLUX_GO_FAST,
         "output_format": config.REPLICATE_FLUX_OUTPUT_FORMAT,
+        "output_quality": config.REPLICATE_FLUX_OUTPUT_QUALITY,
+        "output_megapixels": config.REPLICATE_FLUX_OUTPUT_MEGAPIXELS,
     }
     if image_url:
         # `images` is an array of input images (image-to-image, max 5).
+        # match_input_image keeps the output's aspect ratio identical to input.
         payload[config.REPLICATE_FLUX_IMAGES_FIELD] = [image_url]
+        payload["aspect_ratio"] = config.REPLICATE_FLUX_ASPECT_RATIO
 
     try:
         output = client.run(model_id, input=payload)
@@ -92,9 +97,11 @@ def generate(
             error="Replicate returned no image data.",
         )
 
+    fmt = config.REPLICATE_FLUX_OUTPUT_FORMAT.lower()
+    mime = "image/jpeg" if fmt in ("jpg", "jpeg") else f"image/{fmt}"
     return FluxResult(
         ok=True,
         image_bytes=data,
-        mime="image/png",
+        mime=mime,
         time_taken_ms=int((time.perf_counter() - started) * 1000),
     )
