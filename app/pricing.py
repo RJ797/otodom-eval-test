@@ -14,13 +14,18 @@ from app import config
 
 
 def gemini_cost(token_usage: Optional[dict]) -> float:
+    """Cost from token counts. `candidates` tokens include text + image output;
+    image output is billed at a much higher rate, so split them out."""
     if not token_usage:
         return 0.0
-    prompt_tokens = token_usage.get("prompt") or 0
-    output_tokens = token_usage.get("candidates") or 0
+    input_tokens = token_usage.get("prompt") or 0
+    candidates = token_usage.get("candidates") or 0
+    image_output = token_usage.get("image_output") or 0
+    text_output = max(0, candidates - image_output)
     cost = (
-        prompt_tokens * config.GEMINI_PRICE_INPUT_PER_1M
-        + output_tokens * config.GEMINI_PRICE_OUTPUT_PER_1M
+        input_tokens * config.GEMINI_PRICE_INPUT_PER_1M
+        + text_output * config.GEMINI_PRICE_TEXT_OUTPUT_PER_1M
+        + image_output * config.GEMINI_PRICE_IMAGE_OUTPUT_PER_1M
     ) / 1_000_000
     return round(cost, 6)
 

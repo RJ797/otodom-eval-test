@@ -70,7 +70,7 @@ async function loadRuns() {
     const opt = document.createElement("option");
     opt.value = r.id;
     const c = r.counts || {};
-    opt.textContent = `${r.name || r.id}  (${c.completed || 0}/${c.total || 0})`;
+    opt.textContent = `${r.name || r.id} (${r.id})  ·  ${c.completed || 0}/${c.total || 0}`;
     if (r.id === state.runId) opt.selected = true;
     sel.appendChild(opt);
   });

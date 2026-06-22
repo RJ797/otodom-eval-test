@@ -112,11 +112,12 @@ GEMINI_IMAGE_SIZE = "1K"  # 1K / 2K
 GEMINI_IMAGE_ASPECT_RATIO = "auto"
 
 # --- Pricing (USD) -----------------------------------------------------------
-# Gemini API returns only token counts, so cost is computed from tokens using
-# these per-1M-token rates (image output is billed as output/candidates tokens).
-# Flux has no usage in its response, so it uses a flat per-image rate.
-GEMINI_PRICE_INPUT_PER_1M = float(os.getenv("GEMINI_PRICE_INPUT_PER_1M", "0"))
-GEMINI_PRICE_OUTPUT_PER_1M = float(os.getenv("GEMINI_PRICE_OUTPUT_PER_1M", "0"))
+# Gemini API returns only token counts, so cost is computed from tokens. Image
+# output tokens are billed far higher than text output, so they are priced
+# separately. Defaults are Gemini 3.1 Flash Image STANDARD rates (USD per 1M).
+GEMINI_PRICE_INPUT_PER_1M = float(os.getenv("GEMINI_PRICE_INPUT_PER_1M", "0.50"))
+GEMINI_PRICE_TEXT_OUTPUT_PER_1M = float(os.getenv("GEMINI_PRICE_TEXT_OUTPUT_PER_1M", "3.00"))
+GEMINI_PRICE_IMAGE_OUTPUT_PER_1M = float(os.getenv("GEMINI_PRICE_IMAGE_OUTPUT_PER_1M", "60.00"))
 FLUX_COST_PER_IMAGE = float(os.getenv("FLUX_COST_PER_IMAGE", "0"))
 
 # --- Scoring -----------------------------------------------------------------

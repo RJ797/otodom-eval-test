@@ -97,6 +97,16 @@ def _extract_usage(resp: Any) -> dict[str, Any]:
         val = getattr(usage, attr, None)
         if val is not None:
             out[short] = val
+
+    # Split out image-output tokens (billed at a higher rate than text output).
+    image_output = 0
+    for detail in getattr(usage, "candidates_tokens_details", None) or []:
+        modality = getattr(detail, "modality", None)
+        modality = getattr(modality, "value", modality)
+        if str(modality).upper().endswith("IMAGE"):
+            image_output += getattr(detail, "token_count", 0) or 0
+    if image_output:
+        out["image_output"] = image_output
     return out
 
 
